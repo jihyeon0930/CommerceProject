@@ -14,42 +14,56 @@ public class Main {
         return electronics;
     }
 
+    //의류 상품 리스트 생성
+    private static List<Product> createClothes() {
+        List<Product> clothes = new ArrayList<>();
+        clothes.add(new Product("봄 니트", 30000, "소재 : 울", 50));
+        clothes.add(new Product("봄 자캣", 150000, "소재 : 나일론", 30));
+        clothes.add(new Product("청바지", 40000, "소재 : 합성", 100));
+        return clothes;
+    }
+
+    //식품 상품 리스트 생성
+    private static List<Product> createFood() {
+        List<Product> food = new ArrayList<>();
+        food.add(new Product("김치찌개 밀키트", 1200000, "최신 안드로이드 스마트폰", 17));
+        food.add(new Product("부대찌개 밀키트", 1350000, "Apple의 초신 스마트폰", 21));
+        return food;
+    }
 
     private static List<Category> createCategories() {
         //Category 객체 생성
         List<Category> categories = new ArrayList<>();
         categories.add(new Category("전자제품", createElectronics()));
-        categories.add(new Category("의류", createElectronics()));
-        categories.add(new Category("식품", createElectronics()));
+        categories.add(new Category("의류", createClothes()));
+        categories.add(new Category("식품", createFood()));
         return categories;
     }
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-
         //CommerceSystem에 전달 (Category 리스트 관리)
-        CommerceSystem commerceSystem = new CommerceSystem(createCategories());
+        CommerceSystem commerceSystem = new CommerceSystem(createCategories(), sc);
 
-        while (true){
-            System.out.println("[ 실시간 커머스 플랫폼 메인 ]");
-            System.out.println("1. 전자제품");
-            System.out.println("2. 의류");
-            System.out.println("3. 식품");
-            System.out.println("0. 종료\t\t\t | 프로그램 종료");
+        State state = State.MAIN;
 
-            int mainInput = sc.nextInt();
-            switch (mainInput) {
-                case 1: commerceSystem.start(1); break;
-                case 2: commerceSystem.start(2); break;
-                case 3: commerceSystem.start(3); break;
-                case 0:
-                    System.out.println(":::프로그램 종료");
-                    return; //while 탈출
-                default:
-                    System.out.println("잘 못 입력하셨습니다. 다시 입력해 주세요.");
-                    continue;
+        while (state != State.EXIT) {
+            switch (state) {
+                case MAIN:
+                    state = commerceSystem.showMain();
+                    break;
+                case CATEGORY:
+                    state = commerceSystem.showCategory();
+                    break;
+                case PRODUCT:
+                    state = commerceSystem.selectProduct();
+                    break;
+                case CART:
+                    state = commerceSystem.cart();
+                    break;
             }
         }
+        System.out.println(":::프로그램 종료");
     }
 }
