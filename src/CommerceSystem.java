@@ -47,12 +47,12 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
                 selectedCategory = categories.get(mainInput - 1);
                 return State.CATEGORY;
             }
-            System.out.println("\n잘못된 입력 입니다.");
-            return State.MAIN;
         } catch (InputMismatchException e) {
             System.out.println("잘못된 입력 입니다. 숫자를 입력해 주세요");
             return State.MAIN;
         }
+        System.out.println("\n유효하지 않은 카테고리 번호 입력.");
+        return State.MAIN;
     }
 
     //CATEGORY 상태 (원래 start) - 전체 상품 출력
@@ -92,14 +92,13 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
                         selectedProduct.getEx(),
                         selectedProduct.getStock());
                 return State.CART;
-            } else {
-                System.out.println("\n잘못된 입력입니다.");
-                return State.PRODUCT;
             }
         } catch (InputMismatchException e) {
             System.out.println("\n잘못된 입력 입니다. 숫자를 입력해 주세요");
             return State.PRODUCT;
         }
+        System.out.println("\n유효하지 않은 상품 번호 입력.");
+        return State.PRODUCT;
     }
 
     //CART 상태 (장바구니)
@@ -124,7 +123,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
             System.out.println("\n잘못된 입력입니다. 숫자를 입력해주세요.");
             return State.CART;
         }
-        System.out.println("\n잘못된 입력입니다.");
+        System.out.println("\n유효하지 않은 번호 입력.");
         return State.CART;
     }
 
