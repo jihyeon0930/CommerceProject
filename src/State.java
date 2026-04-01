@@ -3,5 +3,6 @@ public enum State {
     CATEGORY,
     PRODUCT,
     CART,
-    EXIT
+    EXIT,
+    ORDER
 }

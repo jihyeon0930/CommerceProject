@@ -8,9 +8,9 @@ public class Main {
     private static List<Product> createElectronics() {
         List<Product> electronics = new ArrayList<>();
         electronics.add(new Product("Galaxy S25", 1200000, "최신 안드로이드 스마트폰", 10));
-        electronics.add(new Product("iPhone 16", 1350000, "Apple의 초신 스마트폰", 20));
+        electronics.add(new Product("iPhone 16", 1350000, "Apple의 초신 스마트폰", 0));
         electronics.add(new Product("MacBook Pro", 2400000, "M3 칩셋이 탑재된 노트북", 30));
-        electronics.add(new Product("irPods Pro", 350000, "노이즈 캔슬링 무선 이어폰", 40));
+        electronics.add(new Product("AirPods Pro", 350000, "노이즈 캔슬링 무선 이어폰", 40));
         return electronics;
     }
 
@@ -26,8 +26,8 @@ public class Main {
     //식품 상품 리스트 생성
     private static List<Product> createFood() {
         List<Product> food = new ArrayList<>();
-        food.add(new Product("김치찌개 밀키트", 1200000, "최신 안드로이드 스마트폰", 17));
-        food.add(new Product("부대찌개 밀키트", 1350000, "Apple의 초신 스마트폰", 21));
+        food.add(new Product("김치찌개 밀키트", 1200000, "국산", 17));
+        food.add(new Product("부대찌개 밀키트", 1350000, "미국산", 21));
         return food;
     }
 
@@ -61,6 +61,9 @@ public class Main {
                     break;
                 case CART:
                     state = commerceSystem.cart();
+                    break;
+                case ORDER:
+                    state = commerceSystem.order();
                     break;
             }
         }

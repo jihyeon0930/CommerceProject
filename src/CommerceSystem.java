@@ -1,12 +1,9 @@
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입력 처리
     //속성(필드) - Product 객체들 관리하는 리스트 -> 카테고리 관리하는 클래스로 변경!!
     private List<Category> categories;
-    private List<Product> cartItems = new ArrayList<>();
+    private Map<Product, Integer> cartItems = new HashMap<>();
 
     private Scanner sc;
     private Category selectedCategory;
@@ -36,6 +33,11 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
         System.out.println("2. 의류");
         System.out.println("3. 식품");
         System.out.println("0. 종료\t\t\t | 프로그램 종료");
+        if (!cartItems.isEmpty()) {
+            System.out.println("\n[ 주문 관리 ]");
+            System.out.println("4. 장바구니 확인 \t| 장바구니를 확인 후 주문합니다.");
+            System.out.println("5. 주문 취소 \t| 진행중인 주문을 취소합니다.");
+        }
         System.out.println("======================================");
         System.out.print("번호 선택 : ");
         try {
@@ -47,7 +49,10 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
                 selectedCategory = categories.get(mainInput - 1);
                 return State.CATEGORY;
             }
-        } catch (InputMismatchException e) {
+            if (!cartItems.isEmpty() && mainInput == 4) {
+                return order();
+            }
+        } catch (NumberFormatException e) {
             System.out.println("잘못된 입력 입니다. 숫자를 입력해 주세요");
             return State.MAIN;
         }
@@ -78,13 +83,12 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     public State selectProduct() {
         System.out.println("======================================");
         System.out.print("상세보가 할 상품 번호 선택 : ");
-        int input = Integer.parseInt(sc.nextLine());
         try {
-            input = sc.nextInt();
+            int input = Integer.parseInt(sc.nextLine());
             if (input == 0) {
-                return State.EXIT;
+                return State.MAIN;
             }
-            if (input > 0 && input < selectedCategory.getProducts().size()) {
+            if (input > 0 && input <= selectedCategory.getProducts().size()) {
                 selectedProduct = selectedCategory.getProducts().get(input - 1);
                 System.out.printf("\n선택한 상품: %s\t | %,12d원 | %s \t | 재고: %d\n",
                         selectedProduct.getName(),
@@ -93,7 +97,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
                         selectedProduct.getStock());
                 return State.CART;
             }
-        } catch (InputMismatchException e) {
+        } catch (NumberFormatException e) {
             System.out.println("\n잘못된 입력 입니다. 숫자를 입력해 주세요");
             return State.PRODUCT;
         }
@@ -110,21 +114,76 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
             int input = Integer.parseInt(sc.nextLine());
 
             if (input == 1) {
-                cartItems.add(selectedProduct);
-                System.out.println("\n" + selectedProduct.getName() + "이(가) 장바구니에 추가되었습니다.");
-
-                return State.MAIN;
+                if (selectedProduct.getStock() <= 0) {
+                    System.out.println("!수량이 부족해 장바구니에 추가할 수 없습니다.");
+                    return State.CATEGORY;
+                } else {
+                    if (cartItems.containsKey(selectedProduct)) {
+                        cartItems.put(selectedProduct, cartItems.get(selectedProduct) + 1);
+                    } else {
+                        cartItems.put(selectedProduct, 1);
+                    }
+                    System.out.println("\n" + selectedProduct.getName() + "이(가) 장바구니에 추가되었습니다.");
+                    return State.MAIN;
+                }
             }
-
             if (input == 2) {
                 return State.MAIN;
             }
-        } catch (InputMismatchException e) {
+        } catch (NumberFormatException e) {
             System.out.println("\n잘못된 입력입니다. 숫자를 입력해주세요.");
             return State.CART;
         }
         System.out.println("\n유효하지 않은 번호 입력.");
         return State.CART;
+    }
+
+    //주문관리 메뉴
+    public State order() {
+        System.out.println("\n아래와 같이 주문 하시겠습니다?");
+        System.out.println("[ 장바구니 내역 ]");
+        int totalPrice = 0;
+        for (Map.Entry<Product, Integer> entry : cartItems.entrySet()) {
+            Product p = entry.getKey();
+            int quantity = entry.getValue();
+
+            totalPrice += p.getPrice() * entry.getValue();
+
+            System.out.printf("%s\t | %,12d원 | %s \t | 수량: %d\n",
+                    p.getName(),
+                    p.getPrice(),
+                    p.getEx(),
+                    quantity);
+        }
+        System.out.printf("\n[ 총 주문 금액 ]\n %,d원\n\n", totalPrice);
+        System.out.println("1. 주문 확정    2. 메인으로 돌아가기");
+        try {
+            int input = Integer.parseInt(sc.nextLine());
+            switch (input) {
+                case 1:
+                    System.out.println("주문이 완료되었습니다! 총 금액: " + totalPrice + "원");
+                    //재고 업데이트
+                    for (Map.Entry<Product, Integer> entry : cartItems.entrySet()) {
+                        Product p = entry.getKey();
+                        int quantity = entry.getValue();
+
+                        int newStock = p.getStock() - quantity;
+                        System.out.printf("%s\t 재고가 " + p.getStock() + "개 -> " + newStock + "개로 업데이트 되었습니다.\n",
+                                p.getName());
+                        p.setStock(newStock);
+                    }
+                    cartItems.clear();
+                    break;
+                case 2:
+                    return State.MAIN;
+                default:
+                    System.out.println("유효하지 않은 번호 입력");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("\n잘못된 입력입니다. 숫자를 입력해주세요.");
+            return State.ORDER;
+        }
+        return State.MAIN;
     }
 
 }
