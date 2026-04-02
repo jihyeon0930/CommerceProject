@@ -73,7 +73,7 @@ public class AdminSystem {
 
     //상품 추가
     public State addProduct() {
-        System.out.println("어느 카테고리에 상품을 추가하시겠습니까?");
+        System.out.println("\n어느 카테고리에 상품을 추가하시겠습니까?");
         int index = 1;
         for (Category c : categories) {
             System.out.println(index++ + ". " + c.getCategoryName());
@@ -125,9 +125,7 @@ public class AdminSystem {
                 inputNewProductStock
         );
 
-
         System.out.println("위 정보로 상품을 추가하시겠습니까?");
-
 
         while (true) {
             int input = Utils.getIntInput(sc, "확인(1) or 취소(2) 입력 : ");

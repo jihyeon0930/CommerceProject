@@ -43,9 +43,11 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+
+        List<Category> categories = createCategories();
         //CommerceSystem에 전달 (Category 리스트 관리)
-        CommerceSystem commerceSystem = new CommerceSystem(createCategories(), sc);
-        AdminSystem adminSystem = new AdminSystem(createCategories(), sc);
+        CommerceSystem commerceSystem = new CommerceSystem(categories, sc);
+        AdminSystem adminSystem = new AdminSystem(categories, sc);
 
         State state = State.MAIN;
 

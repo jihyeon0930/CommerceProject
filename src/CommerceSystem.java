@@ -9,11 +9,13 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     private final Scanner sc;
     private Category selectedCategory;
     private Product selectedProduct;
+    private AdminSystem adminSystem;
 
     //생성자
     public CommerceSystem(List<Category> categories, Scanner sc) {
         this.categories = categories;
         this.sc = sc;
+        this.adminSystem = new AdminSystem(categories, sc);
     }
 
     //상품 리스트 반환 게터
@@ -29,8 +31,6 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
 
     //MAIN 상태
     public State showMain() {
-        AdminSystem adminSystem = new AdminSystem(categories, sc);
-
         System.out.println("\n[ 실시간 커머스 플랫폼 메인 ]");
         int index = 1;
         for (Category c : categories) {
@@ -74,7 +74,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
         System.out.println("\n[ " + selectedCategory.getCategoryName() + " ]");
         int index = 1;
         for (Product p : selectedCategory.getProducts()) {
-            System.out.printf("%d. %s\t | %,12d원 | %s\n",
+            System.out.printf("%d. %s\t\t | %,12d원 | %s\n",
                     index++,
                     p.getName(),
                     p.getPrice(),
