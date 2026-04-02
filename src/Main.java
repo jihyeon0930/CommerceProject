@@ -45,6 +45,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         //CommerceSystem에 전달 (Category 리스트 관리)
         CommerceSystem commerceSystem = new CommerceSystem(createCategories(), sc);
+        AdminSystem adminSystem = new AdminSystem(createCategories(), sc);
 
         State state = State.MAIN;
 
@@ -65,6 +66,8 @@ public class Main {
                 case ORDER:
                     state = commerceSystem.order();
                     break;
+                case ADMIN:
+                    state = adminSystem.adminMode();
             }
         }
         System.out.println(":::프로그램 종료");
