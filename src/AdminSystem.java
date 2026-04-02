@@ -43,7 +43,8 @@ public class AdminSystem {
         System.out.println("4. 전체 상품 현황");
         System.out.println("0. 메인으로 돌아가기");
         System.out.println("======================================");
-        System.out.println("번호 선택 : ");
+        int adminInput = Utils.getIntInput(sc, "번호 선택 : ");
+
 
         return State.MAIN;
     }

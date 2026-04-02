@@ -16,7 +16,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     }
 
     //상품 리스트 반환 게터
-    public List<Category> getCategores() {
+    public List<Category> getCategories() {
         return categories;
     }
 
@@ -25,17 +25,6 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     }
 
     //기능
-    //입력 처리 메서드
-    private int getIntInput(String message) {
-        while (true) {
-            System.out.print(message);
-            try {
-                return Integer.parseInt(sc.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("숫자를 입력해 주세요.");
-            }
-        }
-    }
 
     //MAIN 상태
     public State showMain() {
@@ -55,7 +44,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
         System.out.println("6. 관리자 모드");
         System.out.println("======================================");
 
-        int mainInput = getIntInput("번호 선택 : ");
+        int mainInput = Utils.getIntInput(sc, "번호 선택 : ");
 
         if (mainInput == 0) {
             return State.EXIT;
@@ -98,7 +87,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     public State selectProduct() {
         System.out.println("======================================");
 
-        int input = getIntInput("상세보가 할 상품 번호 선택 : ");
+        int input = Utils.getIntInput(sc, "상세보가 할 상품 번호 선택 : ");
 
         if (input == 0) {
             return State.MAIN;
@@ -121,7 +110,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     public State cart() {
         System.out.println("위 상품을 장바구니에 추가하시겠습니까?");
 
-        int input = getIntInput("확인(1) or 취소(2) 입력 : ");
+        int input = Utils.getIntInput(sc, "확인(1) or 취소(2) 입력 : ");
 
         if (input == 1) {
             if (selectedProduct.getStock() <= 0) {
@@ -164,7 +153,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
         }
         System.out.printf("\n[ 총 주문 금액 ]\n %,d원\n\n", totalPrice);
 
-        int input = getIntInput("1. 주문 확정    2. 메인으로 돌아가기");
+        int input = Utils.getIntInput(sc, "1. 주문 확정    2. 메인으로 돌아가기");
 
         switch (input) {
             case 1:
