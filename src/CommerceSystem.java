@@ -25,6 +25,17 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     }
 
     //기능
+    //입력 처리 메서드
+    private int getIntInput(String message) {
+        while (true) {
+            System.out.print(message);
+            try {
+                return Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해 주세요.");
+            }
+        }
+    }
 
     //MAIN 상태
     public State showMain() {
@@ -39,23 +50,20 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
             System.out.println("5. 주문 취소 \t| 진행중인 주문을 취소합니다.");
         }
         System.out.println("======================================");
-        System.out.print("번호 선택 : ");
-        try {
-            int mainInput = Integer.parseInt(sc.nextLine());
-            if (mainInput == 0) {
-                return State.EXIT;
-            }
-            if (mainInput >= 1 && mainInput <= categories.size()) {
-                selectedCategory = categories.get(mainInput - 1);
-                return State.CATEGORY;
-            }
-            if (!cartItems.isEmpty() && mainInput == 4) {
-                return order();
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("잘못된 입력 입니다. 숫자를 입력해 주세요");
-            return State.MAIN;
+
+        int mainInput = getIntInput("번호 선택 : ");
+
+        if (mainInput == 0) {
+            return State.EXIT;
         }
+        if (mainInput >= 1 && mainInput <= categories.size()) {
+            selectedCategory = categories.get(mainInput - 1);
+            return State.CATEGORY;
+        }
+        if (!cartItems.isEmpty() && mainInput == 4) {
+            return order();
+        }
+
         System.out.println("\n유효하지 않은 카테고리 번호 입력.");
         return State.MAIN;
     }
@@ -82,25 +90,22 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     //PRODUCT 상태 (선택 상품 출력 - 상세보기)
     public State selectProduct() {
         System.out.println("======================================");
-        System.out.print("상세보가 할 상품 번호 선택 : ");
-        try {
-            int input = Integer.parseInt(sc.nextLine());
-            if (input == 0) {
-                return State.MAIN;
-            }
-            if (input > 0 && input <= selectedCategory.getProducts().size()) {
-                selectedProduct = selectedCategory.getProducts().get(input - 1);
-                System.out.printf("\n선택한 상품: %s\t | %,12d원 | %s \t | 재고: %d\n",
-                        selectedProduct.getName(),
-                        selectedProduct.getPrice(),
-                        selectedProduct.getEx(),
-                        selectedProduct.getStock());
-                return State.CART;
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("\n잘못된 입력 입니다. 숫자를 입력해 주세요");
-            return State.PRODUCT;
+
+        int input = getIntInput("상세보가 할 상품 번호 선택 : ");
+
+        if (input == 0) {
+            return State.MAIN;
         }
+        if (input > 0 && input <= selectedCategory.getProducts().size()) {
+            selectedProduct = selectedCategory.getProducts().get(input - 1);
+            System.out.printf("\n선택한 상품: %s\t | %,12d원 | %s \t | 재고: %d\n",
+                    selectedProduct.getName(),
+                    selectedProduct.getPrice(),
+                    selectedProduct.getEx(),
+                    selectedProduct.getStock());
+            return State.CART;
+        }
+
         System.out.println("\n유효하지 않은 상품 번호 입력.");
         return State.PRODUCT;
     }
@@ -108,32 +113,27 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     //CART 상태 (장바구니)
     public State cart() {
         System.out.println("위 상품을 장바구니에 추가하시겠습니까?");
-        System.out.print("확인(1) or 취소(2) 입력 : ");
 
-        try {
-            int input = Integer.parseInt(sc.nextLine());
+        int input = getIntInput("확인(1) or 취소(2) 입력 : ");
 
-            if (input == 1) {
-                if (selectedProduct.getStock() <= 0) {
-                    System.out.println("!수량이 부족해 장바구니에 추가할 수 없습니다.");
-                    return State.CATEGORY;
+        if (input == 1) {
+            if (selectedProduct.getStock() <= 0) {
+                System.out.println("!수량이 부족해 장바구니에 추가할 수 없습니다.");
+                return State.CATEGORY;
+            } else {
+                if (cartItems.containsKey(selectedProduct)) {
+                    cartItems.put(selectedProduct, cartItems.get(selectedProduct) + 1);
                 } else {
-                    if (cartItems.containsKey(selectedProduct)) {
-                        cartItems.put(selectedProduct, cartItems.get(selectedProduct) + 1);
-                    } else {
-                        cartItems.put(selectedProduct, 1);
-                    }
-                    System.out.println("\n" + selectedProduct.getName() + "이(가) 장바구니에 추가되었습니다.");
-                    return State.MAIN;
+                    cartItems.put(selectedProduct, 1);
                 }
-            }
-            if (input == 2) {
+                System.out.println("\n" + selectedProduct.getName() + "이(가) 장바구니에 추가되었습니다.");
                 return State.MAIN;
             }
-        } catch (NumberFormatException e) {
-            System.out.println("\n잘못된 입력입니다. 숫자를 입력해주세요.");
-            return State.CART;
         }
+        if (input == 2) {
+            return State.MAIN;
+        }
+
         System.out.println("\n유효하지 않은 번호 입력.");
         return State.CART;
     }
@@ -156,32 +156,28 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
                     quantity);
         }
         System.out.printf("\n[ 총 주문 금액 ]\n %,d원\n\n", totalPrice);
-        System.out.println("1. 주문 확정    2. 메인으로 돌아가기");
-        try {
-            int input = Integer.parseInt(sc.nextLine());
-            switch (input) {
-                case 1:
-                    System.out.println("주문이 완료되었습니다! 총 금액: " + totalPrice + "원");
-                    //재고 업데이트
-                    for (Map.Entry<Product, Integer> entry : cartItems.entrySet()) {
-                        Product p = entry.getKey();
-                        int quantity = entry.getValue();
 
-                        int newStock = p.getStock() - quantity;
-                        System.out.printf("%s\t 재고가 " + p.getStock() + "개 -> " + newStock + "개로 업데이트 되었습니다.\n",
-                                p.getName());
-                        p.setStock(newStock);
-                    }
-                    cartItems.clear();
-                    break;
-                case 2:
-                    return State.MAIN;
-                default:
-                    System.out.println("유효하지 않은 번호 입력");
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("\n잘못된 입력입니다. 숫자를 입력해주세요.");
-            return State.ORDER;
+        int input = getIntInput("1. 주문 확정    2. 메인으로 돌아가기");
+
+        switch (input) {
+            case 1:
+                System.out.println("주문이 완료되었습니다! 총 금액: " + totalPrice + "원");
+                //재고 업데이트
+                for (Map.Entry<Product, Integer> entry : cartItems.entrySet()) {
+                    Product p = entry.getKey();
+                    int quantity = entry.getValue();
+
+                    int newStock = p.getStock() - quantity;
+                    System.out.printf("%s\t 재고가 " + p.getStock() + "개 -> " + newStock + "개로 업데이트 되었습니다.\n",
+                            p.getName());
+                    p.setStock(newStock);
+                }
+                cartItems.clear();
+                break;
+            case 2:
+                return State.MAIN;
+            default:
+                System.out.println("유효하지 않은 번호 입력");
         }
         return State.MAIN;
     }
