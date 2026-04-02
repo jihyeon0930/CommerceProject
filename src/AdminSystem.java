@@ -44,8 +44,24 @@ public class AdminSystem {
         System.out.println("0. 메인으로 돌아가기");
         System.out.println("======================================");
         int adminInput = Utils.getIntInput(sc, "번호 선택 : ");
-
+        switch (adminInput) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 0:
+                return State.MAIN;
+        }
 
         return State.MAIN;
     }
+
+    //상품 추가
+    public State
+
+    //상품 수정
+
+    //상품 삭제
+
+    //전체 상품 현황
 }
