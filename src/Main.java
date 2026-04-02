@@ -50,25 +50,15 @@ public class Main {
         State state = State.MAIN;
 
         while (state != State.EXIT) {
-            switch (state) {
-                case MAIN:
-                    state = commerceSystem.showMain();
-                    break;
-                case CATEGORY:
-                    state = commerceSystem.showCategory();
-                    break;
-                case PRODUCT:
-                    state = commerceSystem.selectProduct();
-                    break;
-                case CART:
-                    state = commerceSystem.cart();
-                    break;
-                case ORDER:
-                    state = commerceSystem.order();
-                    break;
-                case ADMIN:
-                    state = adminSystem.adminMode();
-            }
+            state = switch (state) {
+                case MAIN -> commerceSystem.showMain();
+                case CATEGORY -> commerceSystem.showCategory();
+                case PRODUCT -> commerceSystem.selectProduct();
+                case CART -> commerceSystem.cart();
+                case ORDER -> commerceSystem.order();
+                case ADMIN -> adminSystem.adminMode();
+                default -> state;
+            };
         }
         System.out.println(":::프로그램 종료");
     }

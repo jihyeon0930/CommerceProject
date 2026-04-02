@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입력 처리
@@ -5,7 +6,7 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
     private List<Category> categories;
     private Map<Product, Integer> cartItems = new HashMap<>();
 
-    private Scanner sc;
+    private final Scanner sc;
     private Category selectedCategory;
     private Product selectedProduct;
 
@@ -31,16 +32,16 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
         AdminSystem adminSystem = new AdminSystem(categories, sc);
 
         System.out.println("\n[ 실시간 커머스 플랫폼 메인 ]");
-        System.out.println("1. 전자제품");
-        System.out.println("2. 의류");
-        System.out.println("3. 식품");
+        int index = 1;
+        for (Category c : categories) {
+            System.out.println(index++ + ". " + c.getCategoryName());
+        }
         System.out.println("0. 종료\t\t\t | 프로그램 종료");
         if (!cartItems.isEmpty()) {
             System.out.println("\n[ 주문 관리 ]");
             System.out.println("4. 장바구니 확인 \t| 장바구니를 확인 후 주문합니다.");
             System.out.println("5. 주문 취소 \t| 진행중인 주문을 취소합니다.");
         }
-        System.out.println("\n\n[ 관리자 전용 ]");
         System.out.println("6. 관리자 모드");
         System.out.println("======================================");
 
