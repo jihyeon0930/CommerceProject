@@ -49,6 +49,8 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
             System.out.println("4. 장바구니 확인 \t| 장바구니를 확인 후 주문합니다.");
             System.out.println("5. 주문 취소 \t| 진행중인 주문을 취소합니다.");
         }
+        System.out.println("\n\n[ 관리자 전용 ]");
+        System.out.println("6. 관리자 모드");
         System.out.println("======================================");
 
         int mainInput = getIntInput("번호 선택 : ");
@@ -62,6 +64,9 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
         }
         if (!cartItems.isEmpty() && mainInput == 4) {
             return order();
+        }
+        if (mainInput == 6) {
+            return adminModePass();
         }
 
         System.out.println("\n유효하지 않은 카테고리 번호 입력.");
@@ -179,6 +184,27 @@ public class CommerceSystem { //커머스 플랫폼 상품 관리, 사용자 입
             default:
                 System.out.println("유효하지 않은 번호 입력");
         }
+        return State.MAIN;
+    }
+
+    //관리자 모드 패스
+    public State adminModePass() {
+        String adminPass = "1234";
+        int inputCount = 0;
+
+        while (inputCount < 3) {
+            System.out.print("관리자 비밀번호 입력 : ");
+            String inputAdminPass = sc.nextLine();
+
+            if (adminPass.equals(inputAdminPass)) {
+                System.out.println("관리자 인증 성공");
+                return State.ADMIN;
+            } else {
+                inputCount++;
+                System.out.println("비밀번호 불잁치. 재입력 필요 (" + inputCount + ")");
+            }
+        }
+        System.out.println("관리자 인증 실패");
         return State.MAIN;
     }
 

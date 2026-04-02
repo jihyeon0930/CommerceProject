@@ -4,5 +4,6 @@ public enum State {
     PRODUCT,
     CART,
     EXIT,
-    ORDER
+    ORDER,
+    ADMIN
 }
