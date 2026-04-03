@@ -43,32 +43,24 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+
+        List<Category> categories = createCategories();
         //CommerceSystem에 전달 (Category 리스트 관리)
-        CommerceSystem commerceSystem = new CommerceSystem(createCategories(), sc);
-        AdminSystem adminSystem = new AdminSystem(createCategories(), sc);
+        CommerceSystem commerceSystem = new CommerceSystem(categories, sc);
+        AdminSystem adminSystem = new AdminSystem(categories, sc);
 
         State state = State.MAIN;
 
         while (state != State.EXIT) {
-            switch (state) {
-                case MAIN:
-                    state = commerceSystem.showMain();
-                    break;
-                case CATEGORY:
-                    state = commerceSystem.showCategory();
-                    break;
-                case PRODUCT:
-                    state = commerceSystem.selectProduct();
-                    break;
-                case CART:
-                    state = commerceSystem.cart();
-                    break;
-                case ORDER:
-                    state = commerceSystem.order();
-                    break;
-                case ADMIN:
-                    state = adminSystem.adminMode();
-            }
+            state = switch (state) {
+                case MAIN -> commerceSystem.showMain();
+                case CATEGORY -> commerceSystem.showCategory();
+                case PRODUCT -> commerceSystem.selectProduct();
+                case CART -> commerceSystem.cart();
+                case ORDER -> commerceSystem.order();
+                case ADMIN -> adminSystem.adminMode();
+                default -> state;
+            };
         }
         System.out.println(":::프로그램 종료");
     }
